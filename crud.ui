@@ -29,90 +29,6 @@
     <string>Nuevo</string>
    </property>
   </widget>
-  <widget class="QTableWidget" name="lista">
-   <property name="geometry">
-    <rect>
-     <x>370</x>
-     <y>20</y>
-     <width>571</width>
-     <height>461</height>
-    </rect>
-   </property>
-   <property name="sizePolicy">
-    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
-     <horstretch>4</horstretch>
-     <verstretch>0</verstretch>
-    </sizepolicy>
-   </property>
-   <property name="minimumSize">
-    <size>
-     <width>571</width>
-     <height>0</height>
-    </size>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="selectionBehavior">
-    <enum>QAbstractItemView::SelectRows</enum>
-   </property>
-   <property name="textElideMode">
-    <enum>Qt::ElideRight</enum>
-   </property>
-   <attribute name="horizontalHeaderCascadingSectionResizes">
-    <bool>false</bool>
-   </attribute>
-   <attribute name="horizontalHeaderMinimumSectionSize">
-    <number>26</number>
-   </attribute>
-   <attribute name="horizontalHeaderDefaultSectionSize">
-    <number>150</number>
-   </attribute>
-   <attribute name="horizontalHeaderStretchLastSection">
-    <bool>true</bool>
-   </attribute>
-   <attribute name="verticalHeaderVisible">
-    <bool>false</bool>
-   </attribute>
-   <column>
-    <property name="text">
-     <string>ID</string>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>9</pointsize>
-      <strikeout>false</strikeout>
-     </font>
-    </property>
-    <property name="textAlignment">
-     <set>AlignCenter</set>
-    </property>
-   </column>
-   <column>
-    <property name="text">
-     <string>NOMBRE</string>
-    </property>
-    <property name="textAlignment">
-     <set>AlignCenter</set>
-    </property>
-   </column>
-   <column>
-    <property name="text">
-     <string>APELLIDOS</string>
-    </property>
-    <property name="textAlignment">
-     <set>AlignCenter</set>
-    </property>
-   </column>
-   <column>
-    <property name="text">
-     <string>DNI</string>
-    </property>
-    <property name="textAlignment">
-     <set>AlignCenter</set>
-    </property>
-   </column>
-  </widget>
   <widget class="QLabel" name="lbl_nombre">
    <property name="geometry">
     <rect>
@@ -206,6 +122,51 @@
    <property name="text">
     <string>Guardar</string>
    </property>
+  </widget>
+  <widget class="QTableWidget" name="lista">
+   <property name="geometry">
+    <rect>
+     <x>400</x>
+     <y>60</y>
+     <width>501</width>
+     <height>411</height>
+    </rect>
+   </property>
+   <attribute name="horizontalHeaderMinimumSectionSize">
+    <number>20</number>
+   </attribute>
+   <attribute name="horizontalHeaderDefaultSectionSize">
+    <number>124</number>
+   </attribute>
+   <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+    <bool>false</bool>
+   </attribute>
+   <attribute name="horizontalHeaderStretchLastSection">
+    <bool>true</bool>
+   </attribute>
+   <attribute name="verticalHeaderVisible">
+    <bool>false</bool>
+   </attribute>
+   <column>
+    <property name="text">
+     <string>ID</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>NOMBRE</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>APELLIDOS</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>DNI</string>
+    </property>
+   </column>
   </widget>
  </widget>
  <resources/>
