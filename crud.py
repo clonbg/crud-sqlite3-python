@@ -58,11 +58,26 @@ def validarDni(nif):
             if tabla[int(dni)%23] == letraControl:
                 respuesta= True
     return respuesta
+
+def validoDNI(dni):
+    tabla = "TRWAGMYFPDXBNJZSQVHLCKE"
+    dig_ext = "XYZ"
+    reemp_dig_ext = {'X':'0', 'Y':'1', 'Z':'2'}
+    numeros = "1234567890"
+    dni = dni.upper()
+    if len(dni) == 9:
+        dig_control = dni[8]
+        dni = dni[:8]
+        if dni[0] in dig_ext:
+            dni = dni.replace(dni[0], reemp_dig_ext[dni[0]])
+        return len(dni) == len([n for n in dni if n in numeros]) \
+            and tabla[int(dni)%23] == dig_control
+    return False
     
 
 
 def comprobarInput():
-    if len(dlg.input_nombre.text()) > 2 and len(dlg.input_apellidos.text()) > 2 and validarDni(dlg.input_dni.text()):
+    if len(dlg.input_nombre.text()) > 2 and len(dlg.input_apellidos.text()) > 2 and validoDNI(dlg.input_dni.text()):
         dlg.btn_guardar.setDisabled(False)
     else:
         dlg.btn_guardar.setDisabled(True)
