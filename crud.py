@@ -12,6 +12,8 @@ import sqlite3
 app = QtWidgets.QApplication([])
 dlg = uic.loadUi('crud.ui')
 
+
+
 # Abrimos y creeamos el cursor
 con = sqlite3.connect('personas.db')
 cursor = con.cursor()
@@ -34,14 +36,11 @@ def conectar():  # Conectar db
             dlg.lista.setItem(num_row, num_col, cell)
 
 
-def nuevo():  # nueva persona
+  # nueva persona
 
 
 
     # Zona asociación funciones
-
-dlg.btn_nuevo.clicked.connect(prueba)
-
 conectar()
 
 dlg.show()
