@@ -47,24 +47,22 @@ def conectar():  # Conectar db
             dlg.lista.setItem(num_row, num_col, cell)
 
 
-def validarDni(dni):
+def validarDni(nif):
     tabla = "TRWAGMYFPDXBNJZSQVHLCKE"
-    dig_ext = "XYZ"
-    reemp_dig_ext = {'X': '0', 'Y': '1', 'Z': '2'}
     numeros = "1234567890"
-    dni = dni.upper()
-    if len(dni) == 9:
-        dig_control = dni[8]
-        dni = dni[:8]
-        if dni[0] in dig_ext:
-            dni = dni.replace(dni[0], reemp_dig_ext[dni[0]])
-        return len(dni) == len([n for n in dni if n in numeros]) \
-            and tabla[int(dni) % 23] == dig_control
-    return False
+    respuesta=False
+    if (len(nif) == 9):
+        letraControl = nif[8].upper()
+        dni = nif[:8]
+        if ( len(dni) == len( [n for n in dni if n in numeros] ) ):
+            if tabla[int(dni)%23] == letraControl:
+                respuesta= True
+    return respuesta
+    
 
 
-def comprobarInputNombre():
-    if len(dlg.input_nombre.text()) > 2:
+def comprobarInput():
+    if len(dlg.input_nombre.text()) > 2 and len(dlg.input_apellidos.text()) > 2 and validarDni(dlg.input_dni.text()):
         dlg.btn_guardar.setDisabled(False)
     else:
         dlg.btn_guardar.setDisabled(True)
@@ -73,10 +71,17 @@ def comprobarInputNombre():
 def nuevo():
     desbloquear_input()
 
+def salir():
+    app.closeAllWindows()
+
     # Zona asociación funciones
 dlg.btn_nuevo.clicked.connect(nuevo)
-dlg.input_nombre.textChanged.connect(comprobarInputNombre)
+dlg.input_nombre.textChanged.connect(comprobarInput)
+dlg.input_apellidos.textChanged.connect(comprobarInput)
+dlg.input_dni.textChanged.connect(comprobarInput)
 
+
+dlg.btn_salir.clicked.connect(salir)
 conectar()
 
 dlg.show()
