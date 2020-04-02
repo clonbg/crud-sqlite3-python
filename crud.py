@@ -12,11 +12,7 @@ import sqlite3
 app = QtWidgets.QApplication([])
 dlg = uic.loadUi('crud.ui')
 
-
-# Abrimos y creeamos el cursor
-con = sqlite3.connect('personas.db')
-cursor = con.cursor()
-
+num_row = 0
 # Zona funciones
 
 
@@ -37,6 +33,8 @@ def bloquear_input():
 
 
 def conectar():  # Conectar db
+    con = sqlite3.connect('personas.db')
+    cursor = con.cursor()
     result = cursor.execute('select * from personas')
     for num_row, items in enumerate(result):
         print(items)
@@ -47,22 +45,10 @@ def conectar():  # Conectar db
             dlg.lista.setItem(num_row, num_col, cell)
 
 
-def validarDni(nif):
-    tabla = "TRWAGMYFPDXBNJZSQVHLCKE"
-    numeros = "1234567890"
-    respuesta=False
-    if (len(nif) == 9):
-        letraControl = nif[8].upper()
-        dni = nif[:8]
-        if ( len(dni) == len( [n for n in dni if n in numeros] ) ):
-            if tabla[int(dni)%23] == letraControl:
-                respuesta= True
-    return respuesta
-
 def validoDNI(dni):
     tabla = "TRWAGMYFPDXBNJZSQVHLCKE"
     dig_ext = "XYZ"
-    reemp_dig_ext = {'X':'0', 'Y':'1', 'Z':'2'}
+    reemp_dig_ext = {'X': '0', 'Y': '1', 'Z': '2'}
     numeros = "1234567890"
     dni = dni.upper()
     if len(dni) == 9:
@@ -71,12 +57,11 @@ def validoDNI(dni):
         if dni[0] in dig_ext:
             dni = dni.replace(dni[0], reemp_dig_ext[dni[0]])
         return len(dni) == len([n for n in dni if n in numeros]) \
-            and tabla[int(dni)%23] == dig_control
+            and tabla[int(dni) % 23] == dig_control
     return False
-    
 
 
-def comprobarInput():
+def comprobarGuardar():
     if len(dlg.input_nombre.text()) > 2 and len(dlg.input_apellidos.text()) > 2 and validoDNI(dlg.input_dni.text()):
         dlg.btn_guardar.setDisabled(False)
     else:
@@ -85,14 +70,68 @@ def comprobarInput():
 
 def nuevo():
     desbloquear_input()
+    dlg.btn_cancelar.setDisabled(False)
+
+
+def borrarTabla():
+    while dlg.lista.rowCount() > 0:
+        dlg.lista.removeRow(0)
+
+
+def refresh():
+    borrarTabla()
+    conectar()
+
 
 def guardar():
     con = sqlite3.connect('personas.db')
     cursor = con.cursor()
-    query="INSERT INTO personas VALUES('Pedro','Lucas','1234567J')"
+    nombre = dlg.input_nombre.text()
+    apellidos = dlg.input_apellidos.text()
+    dni = dlg.input_dni.text()
+    query = "INSERT INTO personas (nombre,apellidos,dni) VALUES ('" + \
+        nombre+"','"+apellidos+"','"+dni+"')"
     cursor.execute(query)
     con.commit()
     cursor.close()
+    refresh()
+    dlg.input_nombre.setText('')
+    dlg.input_apellidos.setText('')
+    dlg.input_dni.setText('')
+    bloquear_input()
+
+
+def cancelar():
+    dlg.input_nombre.setText('')
+    dlg.input_apellidos.setText('')
+    dlg.input_dni.setText('')
+    bloquear_input()
+    dlg.btn_cancelar.setDisabled(True)
+
+
+def rowSelected():
+    fila = str(dlg.lista.selectedItems()[0].text())
+    con = sqlite3.connect('personas.db')
+    cursor = con.cursor()
+    query = "DELETE FROM personas where ID=" + fila + ""
+    msg = QMessageBox()
+    msg.setIcon(QMessageBox.Information)
+    msg.setText("This is a message box")
+    msg.setInformativeText("This is additional information")
+    msg.setWindowTitle("MessageBox demo")
+    msg.setDetailedText("The details are as follows:")
+    msg.setStandardButtons(QMessageBox.Ok)
+    msg.addButton(QMessageBox.No)
+
+    respuesta = msg.exec_()
+    if respuesta == QMessageBox.Ok:
+        print('Borra')
+    else:
+        print('Cancela')
+    # cursor.execute(query)
+    # con.commit()
+    # cursor.close()
+    refresh()
 
 
 def salir():
@@ -100,10 +139,12 @@ def salir():
 
     # Zona asociación funciones
 dlg.btn_nuevo.clicked.connect(nuevo)
-dlg.input_nombre.textChanged.connect(comprobarInput)
-dlg.input_apellidos.textChanged.connect(comprobarInput)
-dlg.input_dni.textChanged.connect(comprobarInput)
+dlg.input_nombre.textChanged.connect(comprobarGuardar)
+dlg.input_apellidos.textChanged.connect(comprobarGuardar)
+dlg.input_dni.textChanged.connect(comprobarGuardar)
 dlg.btn_guardar.clicked.connect(guardar)
+dlg.btn_cancelar.clicked.connect(cancelar)
+dlg.lista.clicked.connect(rowSelected)
 
 
 dlg.btn_salir.clicked.connect(salir)
