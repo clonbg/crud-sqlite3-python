@@ -86,6 +86,15 @@ def comprobarInput():
 def nuevo():
     desbloquear_input()
 
+def guardar():
+    con = sqlite3.connect('personas.db')
+    cursor = con.cursor()
+    query="INSERT INTO personas VALUES('Pedro','Lucas','1234567J')"
+    cursor.execute(query)
+    con.commit()
+    cursor.close()
+
+
 def salir():
     app.closeAllWindows()
 
@@ -94,10 +103,12 @@ dlg.btn_nuevo.clicked.connect(nuevo)
 dlg.input_nombre.textChanged.connect(comprobarInput)
 dlg.input_apellidos.textChanged.connect(comprobarInput)
 dlg.input_dni.textChanged.connect(comprobarInput)
+dlg.btn_guardar.clicked.connect(guardar)
 
 
 dlg.btn_salir.clicked.connect(salir)
 conectar()
+
 
 dlg.show()
 app.exec()
