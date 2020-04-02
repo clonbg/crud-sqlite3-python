@@ -99,6 +99,7 @@ def guardar():
     dlg.input_apellidos.setText('')
     dlg.input_dni.setText('')
     bloquear_input()
+    dlg.btn_cancelar.setDisabled(True)
 
 
 def cancelar():
@@ -107,32 +108,40 @@ def cancelar():
     dlg.input_dni.setText('')
     bloquear_input()
     dlg.btn_cancelar.setDisabled(True)
+    dlg.btn_eliminar.setDisabled(True)
+    dlg.btn_nuevo.setDisabled(False)
 
-
-def rowSelected():
-    fila = str(dlg.lista.selectedItems()[0].text())
+def selectEliminar():
+    dlg.btn_eliminar.setDisabled(False)
+    dlg.btn_nuevo.setDisabled(True)
+    dlg.btn_cancelar.setDisabled(False)
+    bloquear_input()
+    
+    
+def eliminar():
     con = sqlite3.connect('personas.db')
     cursor = con.cursor()
-    query = "DELETE FROM personas where ID=" + fila + ""
+    query = "DELETE FROM personas where ID=" + str(dlg.lista.selectedItems()[0].text()) + ""
     msg = QMessageBox()
-    msg.setIcon(QMessageBox.Information)
-    msg.setText("This is a message box")
-    msg.setInformativeText("This is additional information")
-    msg.setWindowTitle("MessageBox demo")
-    msg.setDetailedText("The details are as follows:")
+    msg.setIcon(QMessageBox.Warning)
+    msg.setText("Acción peligrosa")
+    msg.setInformativeText("¿Esta segur@ de que desea eliminar la fila?")
+    msg.setWindowTitle("Aviso")
     msg.setStandardButtons(QMessageBox.Ok)
     msg.addButton(QMessageBox.No)
-
     respuesta = msg.exec_()
     if respuesta == QMessageBox.Ok:
         print('Borra')
+        cursor.execute(query)
+        con.commit()
+        cursor.close()
+        refresh()
     else:
         print('Cancela')
-    # cursor.execute(query)
-    # con.commit()
-    # cursor.close()
-    refresh()
-
+    dlg.btn_cancelar.setDisabled(True)
+    dlg.btn_eliminar.setDisabled(True)
+    dlg.btn_nuevo.setDisabled(False)
+    bloquear_input()
 
 def salir():
     app.closeAllWindows()
@@ -144,7 +153,8 @@ dlg.input_apellidos.textChanged.connect(comprobarGuardar)
 dlg.input_dni.textChanged.connect(comprobarGuardar)
 dlg.btn_guardar.clicked.connect(guardar)
 dlg.btn_cancelar.clicked.connect(cancelar)
-dlg.lista.clicked.connect(rowSelected)
+dlg.lista.clicked.connect(selectEliminar)
+dlg.btn_eliminar.clicked.connect(eliminar)
 
 
 dlg.btn_salir.clicked.connect(salir)
