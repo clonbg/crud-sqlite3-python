@@ -12,7 +12,7 @@ import sqlite3
 app = QtWidgets.QApplication([])
 dlg = uic.loadUi('crud.ui')
 
-num_row = 0
+editarONuevo = True  # variable general para saber si se esta actualizando o es uno nuevo
 # Zona funciones
 
 
@@ -69,8 +69,10 @@ def comprobarGuardar():
 
 
 def nuevo():
+    global editarONuevo
     desbloquear_input()
     dlg.btn_cancelar.setDisabled(False)
+    editarONuevo = True
 
 
 def borrarTabla():
@@ -83,25 +85,6 @@ def refresh():
     conectar()
 
 
-def guardar():
-    con = sqlite3.connect('personas.db')
-    cursor = con.cursor()
-    nombre = dlg.input_nombre.text()
-    apellidos = dlg.input_apellidos.text()
-    dni = dlg.input_dni.text()
-    query = "INSERT INTO personas (nombre,apellidos,dni) VALUES ('" + \
-        nombre+"','"+apellidos+"','"+dni+"')"
-    cursor.execute(query)
-    con.commit()
-    cursor.close()
-    refresh()
-    dlg.input_nombre.setText('')
-    dlg.input_apellidos.setText('')
-    dlg.input_dni.setText('')
-    bloquear_input()
-    dlg.btn_cancelar.setDisabled(True)
-
-
 def cancelar():
     dlg.input_nombre.setText('')
     dlg.input_apellidos.setText('')
@@ -112,18 +95,20 @@ def cancelar():
     dlg.btn_nuevo.setDisabled(False)
     dlg.btn_editar.setDisabled(True)
 
+
 def selectTabla():
     dlg.btn_eliminar.setDisabled(False)
     dlg.btn_nuevo.setDisabled(True)
     dlg.btn_cancelar.setDisabled(False)
     bloquear_input()
     dlg.btn_editar.setDisabled(False)
-    
-    
+
+
 def eliminar():
     con = sqlite3.connect('personas.db')
     cursor = con.cursor()
-    query = "DELETE FROM personas where ID=" + str(dlg.lista.selectedItems()[0].text()) + ""
+    query = "DELETE FROM personas where ID=" + \
+        str(dlg.lista.selectedItems()[0].text()) + ""
     msg = QMessageBox()
     msg.setIcon(QMessageBox.Warning)
     msg.setText("Acción peligrosa")
@@ -144,13 +129,57 @@ def eliminar():
     dlg.btn_eliminar.setDisabled(True)
     dlg.btn_nuevo.setDisabled(False)
     bloquear_input()
+    dlg.btn_editar.setDisabled(True)
+
+
+def guardar():
+    global editarONuevo
+    con = sqlite3.connect('personas.db')
+    cursor = con.cursor()
+    nombre = dlg.input_nombre.text()
+    apellidos = dlg.input_apellidos.text()
+    dni = dlg.input_dni.text().upper()
+    print(editarONuevo)
+    if editarONuevo == True:
+        query = "INSERT INTO personas (nombre,apellidos,dni) VALUES ('" + \
+            nombre + "','" + apellidos + "','" + dni + "')"
+    elif editarONuevo == False:
+        query = "UPDATE personas SET nombre='"+nombre + \
+            "',apellidos='"+apellidos+"',dni='"+dni+"' WHERE ID='" + \
+                str(dlg.lista.selectedItems()[0].text()) + "'"
+        dlg.btn_nuevo.setDisabled(False)
+    cursor.execute(query)
+    con.commit()
+    cursor.close()
+    refresh()
+    dlg.input_nombre.setText('')
+    dlg.input_apellidos.setText('')
+    dlg.input_dni.setText('')
+    bloquear_input()
+    dlg.btn_cancelar.setDisabled(True)
+    dlg.btn_editar.setDisabled(True)
+
 
 def editar():
+    global editarONuevo
+    editarONuevo = False
     desbloquear_input()
-    nombre=dlg.lista.selectedItems()[1].text()
-    apellidos=dlg.lista.selectedItems()[2].text()
-    dni=str(dlg.lista.selectedItems()[3].text())
-    print(nombre, apellidos,dni)
+    nombre = dlg.lista.selectedItems()[1].text()
+    apellidos = dlg.lista.selectedItems()[2].text()
+    dni = str(dlg.lista.selectedItems()[3].text())
+    dlg.input_nombre.setText(nombre)
+    dlg.input_apellidos.setText(apellidos)
+    dlg.input_dni.setText(dni)
+    dlg.btn_eliminar.setDisabled(True)
+    dlg.btn_editar.setDisabled(True)
+
+
+def buscar():
+    palabra = dlg.input_buscar.text()
+
+    if len(palabra) > 2:
+        dlg.lista.findItems()
+
 
 def salir():
     app.closeAllWindows()
@@ -165,6 +194,7 @@ dlg.btn_cancelar.clicked.connect(cancelar)
 dlg.lista.clicked.connect(selectTabla)
 dlg.btn_eliminar.clicked.connect(eliminar)
 dlg.btn_editar.clicked.connect(editar)
+dlg.input_buscar.textChanged.connect(buscar)
 
 
 dlg.btn_salir.clicked.connect(salir)
