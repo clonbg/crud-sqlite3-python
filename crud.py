@@ -110,12 +110,14 @@ def cancelar():
     dlg.btn_cancelar.setDisabled(True)
     dlg.btn_eliminar.setDisabled(True)
     dlg.btn_nuevo.setDisabled(False)
+    dlg.btn_editar.setDisabled(True)
 
-def selectEliminar():
+def selectTabla():
     dlg.btn_eliminar.setDisabled(False)
     dlg.btn_nuevo.setDisabled(True)
     dlg.btn_cancelar.setDisabled(False)
     bloquear_input()
+    dlg.btn_editar.setDisabled(False)
     
     
 def eliminar():
@@ -143,6 +145,13 @@ def eliminar():
     dlg.btn_nuevo.setDisabled(False)
     bloquear_input()
 
+def editar():
+    desbloquear_input()
+    nombre=dlg.lista.selectedItems()[1].text()
+    apellidos=dlg.lista.selectedItems()[2].text()
+    dni=str(dlg.lista.selectedItems()[3].text())
+    print(nombre, apellidos,dni)
+
 def salir():
     app.closeAllWindows()
 
@@ -153,8 +162,9 @@ dlg.input_apellidos.textChanged.connect(comprobarGuardar)
 dlg.input_dni.textChanged.connect(comprobarGuardar)
 dlg.btn_guardar.clicked.connect(guardar)
 dlg.btn_cancelar.clicked.connect(cancelar)
-dlg.lista.clicked.connect(selectEliminar)
+dlg.lista.clicked.connect(selectTabla)
 dlg.btn_eliminar.clicked.connect(eliminar)
+dlg.btn_editar.clicked.connect(editar)
 
 
 dlg.btn_salir.clicked.connect(salir)
