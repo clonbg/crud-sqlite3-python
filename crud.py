@@ -8,21 +8,12 @@
 from PyQt5 import QtWidgets, uic, QtCore
 from PyQt5.QtWidgets import *
 import sqlite3
-import unicodedata
 
 app = QtWidgets.QApplication([])
 dlg = uic.loadUi('crud.ui')
 
 editarONuevo = True  # variable general para saber si se esta actualizando o es uno nuevo
 # Zona funciones
-
-
-def prueba():
-    print('yesss')
-
-def elimina_tildes(cadena):
-    s = ''.join((c for c in unicodedata.normalize('NFD',cadena) if unicodedata.category(c) != 'Mn'))
-    return s
 
 def desbloquear_input():
     dlg.input_nombre.setDisabled(False)
@@ -54,7 +45,7 @@ def validoDNI(dni):
     dig_ext = "XYZ"
     reemp_dig_ext = {'X': '0', 'Y': '1', 'Z': '2'}
     numeros = "1234567890"
-    dni = dni.upper()
+    dni = dni.upper().strip()
     if len(dni) == 9:
         dig_control = dni[8]
         dni = dni[:8]
@@ -78,7 +69,6 @@ def nuevo():
     dlg.btn_cancelar.setDisabled(False)
     editarONuevo = True
     dlg.input_buscar.setText('')
-
 
 
 def borrarTabla():
@@ -139,14 +129,13 @@ def eliminar():
     dlg.input_buscar.setText('')
 
 
-
 def guardar():
     global editarONuevo
     con = sqlite3.connect('personas.db')
     cursor = con.cursor()
-    nombre = dlg.input_nombre.text()
-    apellidos = dlg.input_apellidos.text()
-    dni = dlg.input_dni.text().upper()
+    nombre = dlg.input_nombre.text().strip()
+    apellidos = dlg.input_apellidos.text().strip()
+    dni = dlg.input_dni.text().upper().strip()
     print(editarONuevo)
     if editarONuevo == True:
         query = "INSERT INTO personas (nombre,apellidos,dni) VALUES ('" + \
