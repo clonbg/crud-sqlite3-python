@@ -132,6 +132,9 @@
      <height>411</height>
     </rect>
    </property>
+   <property name="editTriggers">
+    <set>QAbstractItemView::NoEditTriggers</set>
+   </property>
    <property name="selectionBehavior">
     <enum>QAbstractItemView::SelectRows</enum>
    </property>
@@ -181,7 +184,7 @@
     </rect>
    </property>
    <property name="placeholderText">
-    <string>Buscar...</string>
+    <string>Buscar... 3 letras mínimo</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btn_salir">

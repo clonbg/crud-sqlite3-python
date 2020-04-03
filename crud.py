@@ -8,6 +8,7 @@
 from PyQt5 import QtWidgets, uic, QtCore
 from PyQt5.QtWidgets import *
 import sqlite3
+import unicodedata
 
 app = QtWidgets.QApplication([])
 dlg = uic.loadUi('crud.ui')
@@ -19,6 +20,9 @@ editarONuevo = True  # variable general para saber si se esta actualizando o es 
 def prueba():
     print('yesss')
 
+def elimina_tildes(cadena):
+    s = ''.join((c for c in unicodedata.normalize('NFD',cadena) if unicodedata.category(c) != 'Mn'))
+    return s
 
 def desbloquear_input():
     dlg.input_nombre.setDisabled(False)
@@ -73,6 +77,8 @@ def nuevo():
     desbloquear_input()
     dlg.btn_cancelar.setDisabled(False)
     editarONuevo = True
+    dlg.input_buscar.setText('')
+
 
 
 def borrarTabla():
@@ -94,6 +100,7 @@ def cancelar():
     dlg.btn_eliminar.setDisabled(True)
     dlg.btn_nuevo.setDisabled(False)
     dlg.btn_editar.setDisabled(True)
+    dlg.input_buscar.setText('')
 
 
 def selectTabla():
@@ -107,8 +114,7 @@ def selectTabla():
 def eliminar():
     con = sqlite3.connect('personas.db')
     cursor = con.cursor()
-    query = "DELETE FROM personas where ID=" + \
-        str(dlg.lista.selectedItems()[0].text()) + ""
+    query = "DELETE FROM personas where ID='"+str(dlg.lista.selectedItems()[0].text())+"'"
     msg = QMessageBox()
     msg.setIcon(QMessageBox.Warning)
     msg.setText("Acción peligrosa")
@@ -130,6 +136,8 @@ def eliminar():
     dlg.btn_nuevo.setDisabled(False)
     bloquear_input()
     dlg.btn_editar.setDisabled(True)
+    dlg.input_buscar.setText('')
+
 
 
 def guardar():
@@ -145,8 +153,7 @@ def guardar():
             nombre + "','" + apellidos + "','" + dni + "')"
     elif editarONuevo == False:
         query = "UPDATE personas SET nombre='"+nombre + \
-            "',apellidos='"+apellidos+"',dni='"+dni+"' WHERE ID='" + \
-                str(dlg.lista.selectedItems()[0].text()) + "'"
+            "',apellidos='"+apellidos+"',dni='"+dni+"' WHERE ID='"+str(dlg.lista.selectedItems()[0].text())+"'"
         dlg.btn_nuevo.setDisabled(False)
     cursor.execute(query)
     con.commit()
@@ -158,6 +165,7 @@ def guardar():
     bloquear_input()
     dlg.btn_cancelar.setDisabled(True)
     dlg.btn_editar.setDisabled(True)
+    dlg.input_buscar.setText('')
 
 
 def editar():
@@ -172,13 +180,28 @@ def editar():
     dlg.input_dni.setText(dni)
     dlg.btn_eliminar.setDisabled(True)
     dlg.btn_editar.setDisabled(True)
+    dlg.input_buscar.setText('')
 
 
 def buscar():
     palabra = dlg.input_buscar.text()
-
     if len(palabra) > 2:
-        dlg.lista.findItems()
+        con = sqlite3.connect('personas.db')
+        cursor = con.cursor()
+        #query="SELECT * FROM personas WHERE nombre LIKE '%"+palabra+"%' OR apellidos LIKE '%"+palabra+"%' OR dni LIKE '%"+palabra+"%'"
+        query="Select * from personas where replace(replace(replace(replace(replace(nombre,'á','a'),'é','e'),'í','i'),'ó','o'),'ú','u') like '%"+palabra+"%' or replace(replace(replace(replace(replace(apellidos,'á','a'),'é','e'),'í','i'),'ó','o'),'ú','u') like '%"+palabra+"%' or dni LIKE '%"+palabra+"%'"
+        result=cursor.execute(query)
+        if result:
+            borrarTabla()
+            for num_row, items in enumerate(result):
+                print(items)
+                dlg.lista.insertRow(num_row)
+                for num_col, dato in enumerate(items):
+                    cell = QtWidgets.QTableWidgetItem(str(dato))
+                    cell.setTextAlignment(QtCore.Qt.AlignCenter)
+                    dlg.lista.setItem(num_row, num_col, cell)
+        cursor.close()
+    elif len(palabra)<3: refresh()
 
 
 def salir():
