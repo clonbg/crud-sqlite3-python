@@ -7,6 +7,7 @@
 
 from PyQt5 import QtWidgets, uic, QtCore
 from PyQt5.QtWidgets import *
+from PyQt5.QtGui import QIcon
 import sqlite3
 
 app = QtWidgets.QApplication([])
@@ -208,10 +209,11 @@ dlg.btn_eliminar.clicked.connect(eliminar)
 dlg.btn_editar.clicked.connect(editar)
 dlg.input_buscar.textChanged.connect(buscar)
 
-
 dlg.btn_salir.clicked.connect(salir)
 conectar()
 
+dlg.setWindowTitle('Base de datos de usuarios en SQLite3') # Nombre del título
+dlg.setWindowIcon(QIcon('usuario.png')) # Icono del título
 
 dlg.show()
 app.exec()
