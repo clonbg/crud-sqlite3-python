@@ -5,16 +5,18 @@
 #   ... > dni TEXT NOT NULL);
 
 
-from PyQt5 import QtWidgets, uic, QtCore
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import QIcon
 import sqlite3
+
+from PyQt5 import QtCore, QtWidgets, uic
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
 
 app = QtWidgets.QApplication([])
 dlg = uic.loadUi('crud.ui')
 
 editarONuevo = True  # variable general para saber si se esta actualizando o es uno nuevo
 # Zona funciones
+
 
 def desbloquear_input():
     dlg.input_nombre.setDisabled(False)
@@ -105,7 +107,8 @@ def selectTabla():
 def eliminar():
     con = sqlite3.connect('personas.db')
     cursor = con.cursor()
-    query = "DELETE FROM personas where ID='"+str(dlg.lista.selectedItems()[0].text())+"'"
+    query = "DELETE FROM personas where ID='" + \
+        str(dlg.lista.selectedItems()[0].text())+"'"
     msg = QMessageBox()
     msg.setIcon(QMessageBox.Warning)
     msg.setText("Acción peligrosa")
@@ -143,7 +146,8 @@ def guardar():
             nombre + "','" + apellidos + "','" + dni + "')"
     elif editarONuevo == False:
         query = "UPDATE personas SET nombre='"+nombre + \
-            "',apellidos='"+apellidos+"',dni='"+dni+"' WHERE ID='"+str(dlg.lista.selectedItems()[0].text())+"'"
+            "',apellidos='"+apellidos+"',dni='"+dni+"' WHERE ID='" + \
+                str(dlg.lista.selectedItems()[0].text())+"'"
         dlg.btn_nuevo.setDisabled(False)
     cursor.execute(query)
     con.commit()
@@ -179,8 +183,10 @@ def buscar():
         con = sqlite3.connect('personas.db')
         cursor = con.cursor()
         #query="SELECT * FROM personas WHERE nombre LIKE '%"+palabra+"%' OR apellidos LIKE '%"+palabra+"%' OR dni LIKE '%"+palabra+"%'"
-        query="Select * from personas where replace(replace(replace(replace(replace(nombre,'á','a'),'é','e'),'í','i'),'ó','o'),'ú','u') like '%"+palabra+"%' or replace(replace(replace(replace(replace(apellidos,'á','a'),'é','e'),'í','i'),'ó','o'),'ú','u') like '%"+palabra+"%' or dni LIKE '%"+palabra+"%'"
-        result=cursor.execute(query)
+        query = "Select * from personas where replace(replace(replace(replace(replace(nombre,'á','a'),'é','e'),'í','i'),'ó','o'),'ú','u') like '%"+palabra + \
+            "%' or replace(replace(replace(replace(replace(apellidos,'á','a'),'é','e'),'í','i'),'ó','o'),'ú','u') like '%" + \
+            palabra+"%' or dni LIKE '%"+palabra+"%'"
+        result = cursor.execute(query)
         if result:
             borrarTabla()
             for num_row, items in enumerate(result):
@@ -191,7 +197,8 @@ def buscar():
                     cell.setTextAlignment(QtCore.Qt.AlignCenter)
                     dlg.lista.setItem(num_row, num_col, cell)
         cursor.close()
-    elif len(palabra)<3: refresh()
+    elif len(palabra) < 3:
+        refresh()
 
 
 def salir():
@@ -212,8 +219,52 @@ dlg.input_buscar.textChanged.connect(buscar)
 dlg.btn_salir.clicked.connect(salir)
 conectar()
 
-dlg.setWindowTitle('Base de datos de usuarios en SQLite3') # Nombre del título
-dlg.setWindowIcon(QIcon('usuario.png')) # Icono del título
+dlg.setWindowTitle('Base de datos de usuarios en SQLite3')  # Nombre del título
+dlg.setWindowIcon(QIcon('usuario.png'))  # Icono del título
+
+# Icono en el tray
+trayIcon = QSystemTrayIcon(QIcon('usuario.png'), parent=app)
+trayIcon.setToolTip('Base de Datos SQLite3')
+trayIcon.show()
+
+# Opciones de minimizar/maximizar y salir al icono del tray
+menu = QMenu()
+
+
+def minimiza():
+    dlg.hide()
+    print('minimzado')
+    menu.removeAction(quitAction)
+    menu.addAction(maximizeAction)
+    menu.addAction(quitAction)
+    menu.removeAction(minimizeAction)
+
+
+def maximiza():
+    dlg.show()
+    print('maximizado')
+    menu.removeAction(quitAction)
+    menu.addAction(minimizeAction)
+    menu.addAction(quitAction)
+    menu.removeAction(maximizeAction)
+
+
+print('maximizado')
+maximizeAction = menu.addAction('Maximizar')
+maximizeAction.triggered.connect(maximiza)
+minimizeAction = menu.addAction('Minimizar')
+minimizeAction.triggered.connect(minimiza)
+menu.removeAction(maximizeAction)
+quitAction = menu.addAction('Cerrar')
+quitAction.triggered.connect(dlg.close)
+trayIcon.setContextMenu(menu)
+
+
+# Centrar ventana
+qr = dlg.frameGeometry()
+cp = QtWidgets.QDesktopWidget().availableGeometry().center()
+qr.moveCenter(cp)
+dlg.move(qr.topLeft())
 
 dlg.show()
 app.exec()
