@@ -204,6 +204,22 @@ def buscar():
 def salir():
     app.closeAllWindows()
 
+
+def minimiza():
+    dlg.hide()
+    menu.removeAction(quitAction)
+    menu.addAction(maximizeAction)
+    menu.addAction(quitAction)
+    menu.removeAction(minimizeAction)
+
+
+def maximiza():
+    dlg.show()
+    menu.removeAction(quitAction)
+    menu.addAction(minimizeAction)
+    menu.addAction(quitAction)
+    menu.removeAction(maximizeAction)
+
     # Zona asociación funciones
 dlg.btn_nuevo.clicked.connect(nuevo)
 dlg.input_nombre.textChanged.connect(comprobarGuardar)
@@ -215,10 +231,10 @@ dlg.lista.clicked.connect(selectTabla)
 dlg.btn_eliminar.clicked.connect(eliminar)
 dlg.btn_editar.clicked.connect(editar)
 dlg.input_buscar.textChanged.connect(buscar)
-
 dlg.btn_salir.clicked.connect(salir)
 conectar()
 
+# Barra del título
 dlg.setWindowTitle('Base de datos de usuarios en SQLite3')  # Nombre del título
 dlg.setWindowIcon(QIcon('usuario.png'))  # Icono del título
 
@@ -229,36 +245,14 @@ trayIcon.show()
 
 # Opciones de minimizar/maximizar y salir al icono del tray
 menu = QMenu()
-
-
-def minimiza():
-    dlg.hide()
-    print('minimzado')
-    menu.removeAction(quitAction)
-    menu.addAction(maximizeAction)
-    menu.addAction(quitAction)
-    menu.removeAction(minimizeAction)
-
-
-def maximiza():
-    dlg.show()
-    print('maximizado')
-    menu.removeAction(quitAction)
-    menu.addAction(minimizeAction)
-    menu.addAction(quitAction)
-    menu.removeAction(maximizeAction)
-
-
-print('maximizado')
-maximizeAction = menu.addAction('Maximizar')
-maximizeAction.triggered.connect(maximiza)
 minimizeAction = menu.addAction('Minimizar')
 minimizeAction.triggered.connect(minimiza)
-menu.removeAction(maximizeAction)
 quitAction = menu.addAction('Cerrar')
 quitAction.triggered.connect(dlg.close)
-trayIcon.setContextMenu(menu)
-
+trayIcon.setContextMenu(menu)  # Aquí se añaden al icono
+maximizeAction = menu.addAction('Maximizar')
+maximizeAction.triggered.connect(maximiza)
+menu.removeAction(maximizeAction)  # Una vez creada se elimina del icono
 
 # Centrar ventana
 qr = dlg.frameGeometry()
