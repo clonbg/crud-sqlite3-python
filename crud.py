@@ -182,7 +182,7 @@ def buscar():
     if len(palabra) > 2:
         con = sqlite3.connect('personas.db')
         cursor = con.cursor()
-        #query="SELECT * FROM personas WHERE nombre LIKE '%"+palabra+"%' OR apellidos LIKE '%"+palabra+"%' OR dni LIKE '%"+palabra+"%'"
+        # query="SELECT * FROM personas WHERE nombre LIKE '%"+palabra+"%' OR apellidos LIKE '%"+palabra+"%' OR dni LIKE '%"+palabra+"%'"
         query = "Select * from personas where replace(replace(replace(replace(replace(nombre,'á','a'),'é','e'),'í','i'),'ó','o'),'ú','u') like '%"+palabra + \
             "%' or replace(replace(replace(replace(replace(apellidos,'á','a'),'é','e'),'í','i'),'ó','o'),'ú','u') like '%" + \
             palabra+"%' or dni LIKE '%"+palabra+"%'"
@@ -253,6 +253,15 @@ trayIcon.setContextMenu(menu)  # Aquí se añaden al icono
 maximizeAction = menu.addAction('Maximizar')
 maximizeAction.triggered.connect(maximiza)
 menu.removeAction(maximizeAction)  # Una vez creada se elimina del icono
+
+# Minimizar con un click
+def onTrayIconActivated(reason):
+    if reason == 3:
+        if dlg.isVisible():
+            minimiza()
+        else:
+            maximiza()
+trayIcon.activated.connect(onTrayIconActivated)
 
 # Centrar ventana
 qr = dlg.frameGeometry()
