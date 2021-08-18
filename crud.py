@@ -220,6 +220,7 @@ def maximiza():
     menu.addAction(quitAction)
     menu.removeAction(maximizeAction)
 
+
     # Zona asociación funciones
 dlg.btn_nuevo.clicked.connect(nuevo)
 dlg.input_nombre.textChanged.connect(comprobarGuardar)
@@ -254,9 +255,10 @@ maximizeAction = menu.addAction('Maximizar')
 maximizeAction.triggered.connect(maximiza)
 menu.removeAction(maximizeAction)  # Una vez creada se elimina del icono
 
-# Minimizar con un click
+# Minimizar/maximizar con doble click
 def onTrayIconActivated(reason):
-    if reason == 3:
+    if reason == trayIcon.DoubleClick:
+        # print('double click')
         if dlg.isVisible():
             minimiza()
         else:
