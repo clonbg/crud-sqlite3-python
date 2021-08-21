@@ -220,6 +220,15 @@ def maximiza():
     menu.addAction(quitAction)
     menu.removeAction(maximizeAction)
 
+# Icono en el tray
+trayIcon = QSystemTrayIcon(QIcon('usuario.png'), parent=app)
+trayIcon.setToolTip('Base de Datos SQLite3')
+def icono():
+    if dlg.checkIcono.isChecked():
+        trayIcon.show()
+    else:
+        trayIcon.hide()
+
 
     # Zona asociación funciones
 dlg.btn_nuevo.clicked.connect(nuevo)
@@ -233,16 +242,12 @@ dlg.btn_eliminar.clicked.connect(eliminar)
 dlg.btn_editar.clicked.connect(editar)
 dlg.input_buscar.textChanged.connect(buscar)
 dlg.btn_salir.clicked.connect(salir)
+dlg.checkIcono.clicked.connect(icono)
 conectar()
 
 # Barra del título
 dlg.setWindowTitle('Base de datos de usuarios en SQLite3')  # Nombre del título
 dlg.setWindowIcon(QIcon('usuario.png'))  # Icono del título
-
-# Icono en el tray
-trayIcon = QSystemTrayIcon(QIcon('usuario.png'), parent=app)
-trayIcon.setToolTip('Base de Datos SQLite3')
-trayIcon.show()
 
 # Opciones de minimizar/maximizar y salir al icono del tray
 menu = QMenu()

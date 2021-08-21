@@ -191,7 +191,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>480</y>
+     <y>450</y>
      <width>80</width>
      <height>23</height>
     </rect>
@@ -246,6 +246,19 @@
    </property>
    <property name="text">
     <string>Editar</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkIcono">
+   <property name="geometry">
+    <rect>
+     <x>160</x>
+     <y>490</y>
+     <width>161</width>
+     <height>28</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Usar icono en el tray</string>
    </property>
   </widget>
  </widget>
