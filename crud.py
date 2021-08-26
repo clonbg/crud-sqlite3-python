@@ -58,22 +58,44 @@ def validoDNI(dni):
             and tabla[int(dni) % 23] == dig_control
     return False
 
-def existeDNI(dni):
-    print('dni: ' ,dni)
+
+def nuevoDNI(dni):
+    global editarONuevo
+    print('editar o guardar', editarONuevo)
+    nuevo = True
+    print('dni: ', dni)
     num_rows = dlg.lista.rowCount()
-    for i in range(1,num_rows):
-        value = dlg.lista.item(i,3)
-        value = value.text()
-        print('dni de la tabla: ',value)
-    return True
+    if editarONuevo: # guardar
+        for i in range(0, num_rows):
+            value = dlg.lista.item(i, 3)
+            value = value.text()
+            print(i,': ',dni.upper(), value)
+            if dni.upper() == value:
+                nuevo = False
+                break
+    else: # editar
+        for i in range(0, num_rows):
+            value = dlg.lista.item(i, 3)
+            value = value.text()
+            print(i,': ',dni.upper(), value)
+            if dni.upper() == value != str(dlg.lista.selectedItems()[3].text()):
+                nuevo = False
+                break
+    return nuevo
 
 # lbl_mensaje_dni donde van los mensajes de dni no válido o dni existente
 
+
 def comprobarGuardar():
-    if len(dlg.input_nombre.text()) > 2 and len(dlg.input_apellidos.text()) > 2 and validoDNI(dlg.input_dni.text()) and existeDNI(dlg.input_dni.text()):
+    if len(dlg.input_nombre.text()) > 2 and len(dlg.input_apellidos.text()) > 2 and validoDNI(dlg.input_dni.text()) and nuevoDNI(dlg.input_dni.text()):
         dlg.btn_guardar.setDisabled(False)
+        dlg.lbl_mensaje_dni.setText('')
     else:
         dlg.btn_guardar.setDisabled(True)
+        if len(dlg.input_dni.text())==9:
+            dlg.lbl_mensaje_dni.setText('DNI incorrecto¡¡')
+        else:
+            dlg.lbl_mensaje_dni.setText('')
 
 
 def nuevo():
@@ -230,15 +252,17 @@ def maximiza():
     menu.addAction(quitAction)
     menu.removeAction(maximizeAction)
 
+
 # Icono en el tray
 trayIcon = QSystemTrayIcon(QIcon('usuario.png'), parent=app)
 trayIcon.setToolTip('Base de Datos SQLite3')
+
+
 def icono():
     if dlg.checkIcono.isChecked():
         trayIcon.show()
     else:
         trayIcon.hide()
-
 
     # Zona asociación funciones
 dlg.btn_nuevo.clicked.connect(nuevo)
@@ -271,6 +295,8 @@ maximizeAction.triggered.connect(maximiza)
 menu.removeAction(maximizeAction)  # Una vez creada se elimina del icono
 
 # Minimizar/maximizar con doble click
+
+
 def onTrayIconActivated(reason):
     if reason == trayIcon.DoubleClick:
         # print('double click')
@@ -278,6 +304,8 @@ def onTrayIconActivated(reason):
             minimiza()
         else:
             maximiza()
+
+
 trayIcon.activated.connect(onTrayIconActivated)
 
 # Centrar ventana
