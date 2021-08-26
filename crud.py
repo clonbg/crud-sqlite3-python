@@ -35,7 +35,7 @@ def conectar():  # Conectar db
     cursor = con.cursor()
     result = cursor.execute('select * from personas')
     for num_row, items in enumerate(result):
-        print(items)
+        # print(items)
         dlg.lista.insertRow(num_row)
         for num_col, dato in enumerate(items):
             cell = QtWidgets.QTableWidgetItem(str(dato))
@@ -58,9 +58,15 @@ def validoDNI(dni):
             and tabla[int(dni) % 23] == dig_control
     return False
 
-
+def existeDNI(dni):
+    print(dni)
+    value = dlg.lista.item(1,1)
+    value = value.text()
+    print(value)
+    return True
+        
 def comprobarGuardar():
-    if len(dlg.input_nombre.text()) > 2 and len(dlg.input_apellidos.text()) > 2 and validoDNI(dlg.input_dni.text()):
+    if len(dlg.input_nombre.text()) > 2 and len(dlg.input_apellidos.text()) > 2 and validoDNI(dlg.input_dni.text()) and existeDNI(dlg.input_dni.text()):
         dlg.btn_guardar.setDisabled(False)
     else:
         dlg.btn_guardar.setDisabled(True)
