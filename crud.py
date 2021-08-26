@@ -59,12 +59,16 @@ def validoDNI(dni):
     return False
 
 def existeDNI(dni):
-    print(dni)
-    value = dlg.lista.item(1,1)
-    value = value.text()
-    print(value)
+    print('dni: ' ,dni)
+    num_rows = dlg.lista.rowCount()
+    for i in range(1,num_rows):
+        value = dlg.lista.item(i,3)
+        value = value.text()
+        print('dni de la tabla: ',value)
     return True
-        
+
+# lbl_mensaje_dni donde van los mensajes de dni no válido o dni existente
+
 def comprobarGuardar():
     if len(dlg.input_nombre.text()) > 2 and len(dlg.input_apellidos.text()) > 2 and validoDNI(dlg.input_dni.text()) and existeDNI(dlg.input_dni.text()):
         dlg.btn_guardar.setDisabled(False)
