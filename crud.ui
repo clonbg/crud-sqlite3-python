@@ -51,47 +51,21 @@
      <x>110</x>
      <y>130</y>
      <width>201</width>
-     <height>27</height>
+     <height>21</height>
     </rect>
-   </property>
-  </widget>
-  <widget class="QLabel" name="lbl_apellidos">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>170</y>
-     <width>64</width>
-     <height>19</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Apellidos:</string>
    </property>
   </widget>
   <widget class="QLabel" name="lbl_dni">
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>210</y>
+     <y>230</y>
      <width>64</width>
      <height>19</height>
     </rect>
    </property>
    <property name="text">
     <string>DNI:</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="input_apellidos">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="geometry">
-    <rect>
-     <x>110</x>
-     <y>170</y>
-     <width>201</width>
-     <height>27</height>
-    </rect>
    </property>
   </widget>
   <widget class="QLineEdit" name="input_dni">
@@ -101,7 +75,7 @@
    <property name="geometry">
     <rect>
      <x>110</x>
-     <y>210</y>
+     <y>220</y>
      <width>201</width>
      <height>27</height>
     </rect>
@@ -264,14 +238,78 @@
   <widget class="QLabel" name="lbl_mensaje_dni">
    <property name="geometry">
     <rect>
-     <x>113</x>
+     <x>190</x>
      <y>250</y>
-     <width>191</width>
+     <width>121</width>
      <height>20</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 0, 0);
+font-size: 75 6pt &quot;Noto Sans&quot;;</string>
+   </property>
    <property name="text">
     <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lbl_mensaje_nombre">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>150</y>
+     <width>121</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 0, 0);
+font-size: 75 6pt &quot;Noto Sans&quot;;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="input_apellidos">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>110</x>
+     <y>180</y>
+     <width>201</width>
+     <height>21</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lbl_mensaje_apellidos">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>200</y>
+     <width>121</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 0, 0);
+font-size: 75 6pt &quot;Noto Sans&quot;;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lbl_apellidos">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>180</y>
+     <width>64</width>
+     <height>19</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Apellidos:</string>
    </property>
   </widget>
  </widget>

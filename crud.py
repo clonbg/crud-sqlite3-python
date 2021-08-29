@@ -61,15 +61,15 @@ def validoDNI(dni):
 
 def nuevoDNI(dni):
     global editarONuevo
-    print('editar o guardar', editarONuevo)
+    # print('editar o guardar', editarONuevo)
     nuevo = True
-    print('dni: ', dni)
+    # print('dni: ', dni)
     num_rows = dlg.lista.rowCount()
     if editarONuevo: # guardar
         for i in range(0, num_rows):
             value = dlg.lista.item(i, 3)
             value = value.text()
-            print(i,': ',dni.upper(), value)
+            # print(i,': ',dni.upper(), value)
             if dni.upper() == value:
                 nuevo = False
                 break
@@ -77,27 +77,44 @@ def nuevoDNI(dni):
         for i in range(0, num_rows):
             value = dlg.lista.item(i, 3)
             value = value.text()
-            print(i,': ',dni.upper(), value)
+            # print(i,': ',dni.upper(), value)
             if dni.upper() == value != str(dlg.lista.selectedItems()[3].text()):
                 nuevo = False
                 break
     return nuevo
 
-# lbl_mensaje_dni donde van los mensajes de dni no válido o dni existente
-
+def validoNombre(nombre):
+    if len(nombre) > 2 and nombre.isalpha():
+        # print('nombre válido')
+        return True
+    else:
+        # print('no válido')
+        return False
+        
 
 def comprobarGuardar():
-    if len(dlg.input_nombre.text()) > 2 and len(dlg.input_apellidos.text()) > 2 and validoDNI(dlg.input_dni.text()) and nuevoDNI(dlg.input_dni.text()):
+    if validoNombre(dlg.input_nombre.text()) and validoNombre(dlg.input_apellidos.text()) and validoDNI(dlg.input_dni.text()) and nuevoDNI(dlg.input_dni.text()):
         dlg.btn_guardar.setDisabled(False)
         dlg.lbl_mensaje_dni.setText('')
     else:
         dlg.btn_guardar.setDisabled(True)
-        if len(dlg.input_dni.text())==9:
-            dlg.lbl_mensaje_dni.setText('DNI incorrecto¡¡')
-        else:
+        if validoNombre(dlg.input_nombre.text()) == False:
+            dlg.lbl_mensaje_nombre.setText('Nombre no válido')
+        if len(dlg.input_nombre.text()) == 0 or validoNombre(dlg.input_nombre.text()) == True:
+            dlg.lbl_mensaje_nombre.setText('')
+
+        if validoNombre(dlg.input_apellidos.text()) == False:
+            dlg.lbl_mensaje_apellidos.setText('Apellidos no válidos')
+        if len(dlg.input_apellidos.text()) == 0 or validoNombre(dlg.input_apellidos.text()) == True:
+            dlg.lbl_mensaje_apellidos.setText('')
+
+        if validoDNI(dlg.input_dni.text()) == False:
+            dlg.lbl_mensaje_dni.setText('Dni no válido')
+        if nuevoDNI(dlg.input_dni.text()) == False:
+            dlg.lbl_mensaje_dni.setText('Dni existente en la bd')
+        if len(dlg.input_dni.text()) == 0 or (validoDNI(dlg.input_dni.text()) == True and nuevoDNI(dlg.input_dni.text()) == True):
             dlg.lbl_mensaje_dni.setText('')
-
-
+        
 def nuevo():
     global editarONuevo
     desbloquear_input()
@@ -150,13 +167,11 @@ def eliminar():
     msg.addButton(QMessageBox.No)
     respuesta = msg.exec_()
     if respuesta == QMessageBox.Ok:
-        print('Borra')
+        # print('Borra')
         cursor.execute(query)
         con.commit()
         cursor.close()
         refresh()
-    else:
-        print('Cancela')
     dlg.btn_cancelar.setDisabled(True)
     dlg.btn_eliminar.setDisabled(True)
     dlg.btn_nuevo.setDisabled(False)
@@ -172,7 +187,7 @@ def guardar():
     nombre = dlg.input_nombre.text().strip()
     apellidos = dlg.input_apellidos.text().strip()
     dni = dlg.input_dni.text().upper().strip()
-    print(editarONuevo)
+    # print(editarONuevo)
     if editarONuevo == True:
         query = "INSERT INTO personas (nombre,apellidos,dni) VALUES ('" + \
             nombre + "','" + apellidos + "','" + dni + "')"
@@ -222,7 +237,7 @@ def buscar():
         if result:
             borrarTabla()
             for num_row, items in enumerate(result):
-                print(items)
+                # print(items)
                 dlg.lista.insertRow(num_row)
                 for num_col, dato in enumerate(items):
                     cell = QtWidgets.QTableWidgetItem(str(dato))
